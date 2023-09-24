@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// s_h_rudra88
+
 void main() {
   runApp(MyApp());
 }
@@ -8,46 +10,82 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'My Shopping List',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyShoppingList(),
+      home: CounterScreen(),
     );
   }
 }
 
-class MyShoppingList extends StatelessWidget {
-  final List<String> Items = [
-    'Apples',
-    'Bananas',
-    'Milk',
-    'Bread',
-    'Eggs',
-  ];
+class CounterScreen extends StatefulWidget {
+  @override
+  _CounterScreenState createState() => _CounterScreenState();
+}
+
+class _CounterScreenState extends State<CounterScreen> {
+  int count = 0;
+
+  void incrementCount() {
+    setState(() {
+      count++;
+      if (count >= 5) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Button pressed $count times."),
+              actions: <Widget>[
+                TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    });
+  }
+
+  void decrementCount() {
+    setState(() {
+      if (count > 0) {
+        count--;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text('My Shopping List'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {
-              // Implement cart functionality here
-            },
-          ),
-        ],
+        title: Text('Counter App'),
       ),
-      body: ListView(
-        children: Items.map((item) => ListTile(
-          leading: Icon(Icons.shopping_cart),
-          title: Text(item),
-          onTap: () {},
-        )).toList(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Count: $count',
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FloatingActionButton(
+                  onPressed: incrementCount,
+                  child: Icon(Icons.add),
+                ),
+                SizedBox(width: 20),
+                FloatingActionButton(
+                  onPressed: decrementCount,
+                  child: Icon(Icons.remove),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
