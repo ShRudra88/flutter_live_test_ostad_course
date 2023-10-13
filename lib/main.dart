@@ -1,145 +1,67 @@
 import 'package:flutter/material.dart';
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
+void main() => runApp(ItemSelectionApp());
+
+class ItemSelectionApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: MyHomePage(),
+      home: ItemListScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class ItemListScreen extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _ItemListScreenState createState() => _ItemListScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int selectedButtonIndex = -1;
-
-  void _showSnackBar(String label) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Size $label selected'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
+class _ItemListScreenState extends State<ItemListScreen> {
+  List<String> items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
+  List<bool> selectedItems = List.filled(5, false);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text('Size Selector'),
+        title: Text('Selection Screen'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedButtonIndex = 0;
-                      _showSnackBar('S');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary:
-                    selectedButtonIndex == 0 ? Colors.yellow : null,
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(items[index]),
+            onTap: () {
+              setState(() {
+                selectedItems[index] = !selectedItems[index];
+              });
+            },
+            tileColor: selectedItems[index] ? Colors.blue : null,
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          int selectedCount = selectedItems.where((selected) => selected).length;
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Selected Items'),
+                content: Text('Number of selected items : $selectedCount'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'),
                   ),
-                  child: Text('S'),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedButtonIndex = 1;
-                      _showSnackBar('M');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary:
-                    selectedButtonIndex == 1 ? Colors.yellow : null,
-                  ),
-                  child: Text('M'),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedButtonIndex = 2;
-                      _showSnackBar('L');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary:
-                    selectedButtonIndex == 2 ? Colors.yellow : null,
-                  ),
-                  child: Text('L'),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedButtonIndex = 3;
-                      _showSnackBar('XL');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary:
-                    selectedButtonIndex == 3 ? Colors.yellow : null,
-                  ),
-                  child: Text('XL'),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedButtonIndex = 4;
-                      _showSnackBar('XXL');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary:
-                    selectedButtonIndex == 4 ? Colors.yellow : null,
-                  ),
-                  child: Text('XXL'),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      selectedButtonIndex = 5;
-                      _showSnackBar('XXXL');
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary:
-                    selectedButtonIndex == 5 ? Colors.yellow : null,
-                  ),
-                  child: Text('XXXL'),
-                ),
-              ],
-            ),
-          ],
-        ),
+                ],
+              );
+            },
+          );
+        },
+        child: Icon(Icons.check),
       ),
     );
   }
