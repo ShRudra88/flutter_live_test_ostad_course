@@ -1,68 +1,34 @@
+import 'package:flutter_live_test_ostad_course/report.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'report.dart';
+import 'item.dart';
+import 'list.dart';
 
-void main() => runApp(ItemSelectionApp());
+class MyHomePage extends StatelessWidget {
+  final String title;
+  final Future<List<report>> products;
 
-class ItemSelectionApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ItemListScreen(),
-    );
-  }
-}
-
-class ItemListScreen extends StatefulWidget {
-  @override
-  _ItemListScreenState createState() => _ItemListScreenState();
-}
-
-class _ItemListScreenState extends State<ItemListScreen> {
-  List<String> items = ["Item 1", "Item 2", "Item 3", "Item 4", "Item 5"];
-  List<bool> selectedItems = List.filled(5, false);
+  MyHomePage({Key key, this.title, this.products}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)
+  {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Selection Screen'),
-      ),
-      body: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(items[index]),
-            onTap: () {
-              setState(() {
-                selectedItems[index] = !selectedItems[index];
-              });
+        appBar: AppBar(
+          title: Text("Weather Info App"),
+        ),
+        body: Center(
+          child: FutureBuilder<List<report>>(
+            future: products,
+            builder: (context, snapshot) {
+              if (snapshot.hasError) print(snapshot.error);
+              return snapshot.hasData
+                  ? List1(items: snapshot.data)
+                  : Center(child: CircularProgressIndicator());
             },
-            tileColor: selectedItems[index] ? Colors.blue : null,
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          int selectedCount = selectedItems.where((selected) => selected).length;
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Selected Items'),
-                content: Text('Number of selected items : $selectedCount'),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('OK'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        child: Icon(Icons.check),
-      ),
-    );
+          ),
+        ));
   }
 }
